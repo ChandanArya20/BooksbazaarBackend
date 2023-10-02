@@ -12,7 +12,7 @@ public class MyController {
         System.out.println("RAm");
         System.out.println("RAm");
 
-        return "Good morning "+name;
+        return "Good morning "+name+"\nHappy Journey";
     }
 
 }
