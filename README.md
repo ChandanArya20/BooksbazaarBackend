@@ -31,7 +31,6 @@ Before you begin, ensure you have met the following requirements:
   
   Note: You can use any SQL database but you have to make changes little bit in properties file of this project
 
-- Before running actual springboot project make sure You have replaced url and password of you DBMS in properties file of project according to enviroment
 
 ### Installation
 
@@ -44,19 +43,24 @@ Before you begin, ensure you have met the following requirements:
    
 3. Use IDE to further build and run this project
 
-4. This project includes different properties file for different enviroment so by default it will start in development enviroment but if you put 'ENV=prod' in application.properties file that tim3 production enviroment will start to running
-
 
 ## Usage
 Provide information on how to use your backend service, including any important instructions, endpoints, and examples. You can also include details on how to integrate it with your React frontend.
 
 ## API Documentation
-Document the API endpoints, request/response formats, and authentication mechanisms if any. You can use tools like Swagger or Spring RestDocs to generate API documentation.
+For API documentation, You can access through swagger link because this application is configured with swagger I have provided two links the first one is for only when this project is running on local machine and the second live link you can use to just see a demo of the api documentation which is live because this project is deployed somewhere, go and visite and have a look
 
-Include a link to the API documentation or instructions on how to access it.
+Local Link : http://localhost:8080/swagger-ui.html
+
+Live Link : http://booksbazaar.up.railway.app/swagger-ui.html
+
+Note : You can change the host name in local link as per your requirement and need.
 
 ## Configuration
-Explain how to configure the backend, including environment variables, database configurations, and any external services it depends on.
+
+- Before running actual springboot project make sure You have replaced url and password of you DBMS in properties file of project according to enviroment
+
+- This project includes different properties file for different enviroment so by default it will start in development enviroment but if you put 'ENV=prod' in application.properties file that tim3 production enviroment will start to running
 
 ## Contributing
 If you would like to contribute to the project, please follow the guidelines in CONTRIBUTING.md.
