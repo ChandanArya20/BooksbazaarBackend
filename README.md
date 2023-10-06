@@ -45,7 +45,41 @@ Before you begin, ensure you have met the following requirements:
 
 
 ## Usage
-Provide information on how to use your backend service, including any important instructions, endpoints, and examples. You can also include details on how to integrate it with your React frontend.
+- User Registration:
+
+Endpoint: /api/register
+
+Method: POST
+
+Description: Register a new user.
+
+Example Request:
+
+{
+
+  "name": "Chandan Kumar",
+  
+  "phone": 99056xxxxx,
+  
+  "email": "chandank1848@gmail.com"
+
+  "password": "20002ckc+"
+  
+}
+
+
+- Get All Books:
+
+Endpoint: /api/book/seller/{seller_id}/all-books
+
+Method: GET
+
+Description: Get a list of all books available in the bookstore of a seller.
+
+Example Response:
+
+/api/book/seller/10/all-books
+
 
 ## API Documentation
 For API documentation, You can access through swagger link because this application is configured with swagger I have provided two links the first one is for only when this project is running on local machine and the second live link you can use to just see a demo of the api documentation which is live because this project is deployed somewhere, go and visite and have a look
