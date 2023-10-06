@@ -60,11 +60,19 @@ Note : You can change the host name in local link as per your requirement and ne
 
 - Before running actual springboot project make sure You have replaced url and password of you DBMS in properties file of project according to enviroment
 
-- This project includes different properties file for different enviroment so by default it will start in development enviroment but if you put 'ENV=prod' in application.properties file that tim3 production enviroment will start to running
+- This project includes different properties file for different enviroment so by default it will start in development enviroment but if you put 'ENV=prod' in application.properties file that time production enviroment will start to running
 
 ## Contributing
 If you would like to contribute to the project, please follow the guidelines in CONTRIBUTING.md.
 
 ## License
-This project is licensed under the MIT License. You are free to use, modify, and distribute this code as per the terms of the license.
-   Ram
+This project is licensed under the public License - use the project for your on purpose.
+
+Thank you for using our eCommerce Bookstore project! If you have any questions or encounter any issues, please don't hesitate to contact us. You can find contact info in developer section.
+
+Happy Reading and Shopping!
+
+## Developer 
+- **Chandan Kumar**
+- **E-mail**: chandank1848@gmail.com
+- **Github**: https://github.com/ChandanArya20
