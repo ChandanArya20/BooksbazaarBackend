@@ -5,7 +5,7 @@ It provides a lot of API to handle HTTP request and also manage databse.
 
 ## Live Demo
 
-Link : https://booksbazaar.netlify.app/
+Frontend App Link: https://booksbazaar.netlify.app/
 
 ## Table of Contents
 
