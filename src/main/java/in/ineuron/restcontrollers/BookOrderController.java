@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import in.ineuron.services.BookOrderService;
+import in.ineuron.services.BookService;
+import in.ineuron.services.SellerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,20 +26,25 @@ import in.ineuron.dto.BookOrderRequest;
 import in.ineuron.dto.BookOrderResponse;
 import in.ineuron.models.BookOrder;
 import in.ineuron.models.User;
-import in.ineuron.services.BookstoreService;
 
 @RestController
 @RequestMapping("/api/order")
 public class BookOrderController {
 
 	@Autowired
-	BookstoreService service;
+	SellerService sellerService;
+
+	@Autowired
+	BookService bookService;
+
+	@Autowired
+	BookOrderService bookOrderSer;
 	
 	@Value("${baseURL}")
 	private String baseURL;
 	
 	
-	@PostMapping("placeOrder")
+	@PostMapping("place-order")
 	public ResponseEntity<String> submitOrder( @RequestBody BookOrderRequest[] orderData){
 		 
 		List<BookOrder> bookList=new ArrayList<>();
@@ -51,30 +59,30 @@ public class BookOrderController {
 			bookOrder.setDeliveryDate(deliverydate);
 			
 			bookList.add(bookOrder);
-			service.decreaseBookStock(bookOrder.getBook().getId(), bookOrder.getQuantity());
+			bookService.decreaseBookStock(bookOrder.getBook().getId(), bookOrder.getQuantity());
 			
 		}
-		service.insertOrder(bookList);
+		bookOrderSer.insertOrder(bookList);
 		return  ResponseEntity.ok("Order submitted successfully...");
 	}
 	
-	@GetMapping("/user/{userId}/allOrders")
-	public ResponseEntity<List<BookOrderResponse>> getOrdersByUser(@PathVariable Long userId)  {
+	@GetMapping("/user/{user-id}/all-orders")
+	public ResponseEntity<List<BookOrderResponse>> getOrdersByUser(@PathVariable(name = "user-id") Long userId)  {
 		
 		User user = new User();
 		user.setId(userId);
 		
-		List<BookOrderResponse> orders = service.fetchOrdersByUser(user);
+		List<BookOrderResponse> orders = bookOrderSer.fetchOrdersByUser(user);
 		Collections.reverse(orders);
 			
 		return ResponseEntity.ok(orders);
 		
 	}
 	
-	@GetMapping("/seller/{sellerId}/allOrders")
-	public ResponseEntity<List<BookOrderResponse>> getOrdersBySeller(@PathVariable Long sellerId)  {
+	@GetMapping("/seller/{seller-id}/all-orders")
+	public ResponseEntity<List<BookOrderResponse>> getOrdersBySeller(@PathVariable(name = "seller-id") Long sellerId)  {
 		
-		List<BookOrderResponse> sellerOrders = service.fetchOrdersBySellerId(sellerId);
+		List<BookOrderResponse> sellerOrders = bookOrderSer.fetchOrdersBySellerId(sellerId);
 		Collections.reverse(sellerOrders);
 		
 		return ResponseEntity.ok(sellerOrders);
@@ -82,16 +90,16 @@ public class BookOrderController {
 	}
 	
 	
-	@PatchMapping("/{orderId}")
-	public ResponseEntity<String> changeBookOrderStatus(@PathVariable Long orderId, @RequestParam String status) {
+	@PatchMapping("/{order-id}")
+	public ResponseEntity<String> changeBookOrderStatus(@PathVariable(name = "order-id") Long orderId, @RequestParam String status) {
 		
 		if(status.equals("Cancelled") || status.equals("Returned") ) {
 			
-			BookOrder order = service.getOrderById(orderId);
-			service.increaseBookStock(order.getBook().getId(), order.getQuantity());
+			BookOrder order = bookOrderSer.getOrderById(orderId);
+			bookService.increaseBookStock(order.getBook().getId(), order.getQuantity());
 		}
 		
-		Boolean changeOrderStatus = service.changeOrderStatus(orderId, status);
+		Boolean changeOrderStatus = bookOrderSer.changeOrderStatus(orderId, status);
 		
 		if(changeOrderStatus)		
 			return ResponseEntity.ok("status updated with "+status);		

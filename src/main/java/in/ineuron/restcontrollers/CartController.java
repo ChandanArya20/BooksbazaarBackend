@@ -3,6 +3,7 @@ package in.ineuron.restcontrollers;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.ineuron.services.CartService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,35 +24,34 @@ import in.ineuron.dto.BookResponse;
 import in.ineuron.dto.CartResponse;
 import in.ineuron.models.Cart;
 import in.ineuron.models.User;
-import in.ineuron.services.BookstoreService;
 
 @RestController
 @RequestMapping("api/cart")
 public class CartController {
 	
 	@Autowired
-	private BookstoreService service;
+	private CartService cartService;
 	
 	@Value("${baseURL}")
 	private String baseURL;
 	
 	
 	
-	@PostMapping("/addToCart")
+	@PostMapping("/add-to-cart")
 	public ResponseEntity<String> addToCart(@RequestBody Cart cart){
-		
-		service.insertCartData(cart);
+
+		cartService.insertCartData(cart);
 		
 		return ResponseEntity.ok("Item inserted into cart successfully...");
 	}
 		 
-	@GetMapping("/user/{userId}/allCartData")
-	public ResponseEntity<List<CartResponse>> getAllCartDataByUser(@PathVariable Long userId){
+	@GetMapping("/user/{user-id}/all-cart-data")
+	public ResponseEntity<List<CartResponse>> getAllCartDataByUser(@PathVariable("user-id") Long userId){
 		
 		User user = new User();
 		user.setId(userId);
 		
-		List<Cart> cartList = service.getAllCartDataByUser(user);
+		List<Cart> cartList = cartService.getAllCartDataByUser(user);
 
 		
 		List<CartResponse> cartResponseList=new ArrayList<>();
@@ -72,18 +72,18 @@ public class CartController {
 		return ResponseEntity.ok(cartResponseList);
 	}
 	
-	@PatchMapping("/updateCartQuantity")
+	@PatchMapping("/update-cart-quantity")
 	public ResponseEntity<String> updateCart(@RequestBody Cart cart){
-		
-		service.updateCartItemQuantity(cart);
+
+		cartService.updateCartItemQuantity(cart);
 		
 		return ResponseEntity.ok("Cart Item quantity got updated...");
 	}
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<String> deleteCart(@RequestBody Cart[] carts){
-		
-		service.deleteCartItems(carts);
+
+		cartService.deleteCartItems(carts);
 		
 		return ResponseEntity.ok("Cart Item quantity got updated...");		
 	}

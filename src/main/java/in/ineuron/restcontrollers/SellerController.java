@@ -1,5 +1,7 @@
 package in.ineuron.restcontrollers;
 
+import in.ineuron.services.BookService;
+import in.ineuron.services.SellerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +16,13 @@ import in.ineuron.dto.SellerLoginRequest;
 import in.ineuron.dto.SellerLoginResponse;
 import in.ineuron.dto.SellerRegisterRequest;
 import in.ineuron.models.BookSeller;
-import in.ineuron.services.BookstoreService;
 
 @RestController
 @RequestMapping("/api/seller")
-public class SellerLoginRegister {
+public class SellerController {
 
 	@Autowired
-	BookstoreService service;
+	SellerService sellerService;
 	
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
@@ -31,13 +32,13 @@ public class SellerLoginRegister {
 	public ResponseEntity<?> registerUser(@RequestBody SellerRegisterRequest requestData){
 			
 		
-		 if (service.isSellerAvailableByPhone(requestData.getEmail()))			 
+		 if (sellerService.isSellerAvailableByPhone(requestData.getEmail()))
 			 return ResponseEntity.badRequest().body("Email No. already registerd with another account");
 	
-		 if (requestData.getPhone()!=null && service.isSellerAvailableByEmail(requestData.getPhone()))	
+		 if (requestData.getPhone()!=null && sellerService.isSellerAvailableByEmail(requestData.getPhone()))
 			 return ResponseEntity.badRequest().body("Phone already registerd with another account");
 			 
-		 if (service.isSellerAvailableBySellerId(requestData.getSellerId())) {	
+		 if (sellerService.isSellerAvailableBySellerId(requestData.getSellerId())) {
 			 return ResponseEntity.badRequest().body("UserId not available");
 			 
 		 }else {
@@ -48,7 +49,7 @@ public class SellerLoginRegister {
 			 //encript password
 			 String encodedPassword = passwordEncoder.encode(seller.getPassword());
 			 seller.setPassword(encodedPassword);
-			 service.registerSeller(seller);
+			 sellerService.registerSeller(seller);
 			 
 			 SellerLoginResponse response = new SellerLoginResponse();
 			 
@@ -65,7 +66,7 @@ public class SellerLoginRegister {
     public ResponseEntity<?> loginUser(@RequestBody SellerLoginRequest loginData) {
 	
 		System.out.println("Encoded password : "+passwordEncoder.encode("2002mkm+"));
-		BookSeller seller = service.fetchSellerBySellerId(loginData.getSellerId());
+		BookSeller seller = sellerService.fetchSellerBySellerId(loginData.getSellerId());
 		
 		if(seller==null) {
 		

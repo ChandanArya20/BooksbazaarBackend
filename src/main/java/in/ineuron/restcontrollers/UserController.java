@@ -2,19 +2,16 @@ package in.ineuron.restcontrollers;
 
 import java.util.List;
 
+import in.ineuron.services.OTPSenderService;
+import in.ineuron.services.OTPStorageService;
+import in.ineuron.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import in.ineuron.config.BCryptEncoder;
 import in.ineuron.dto.AddressRequest;
 import in.ineuron.dto.LoginRequest;
 import in.ineuron.dto.LoginResponse;
@@ -22,29 +19,37 @@ import in.ineuron.dto.RegisterRequest;
 import in.ineuron.dto.UserResponse;
 import in.ineuron.models.Address;
 import in.ineuron.models.User;
-import in.ineuron.services.BookstoreService;
+
+
+import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserLoginRegister {
+public class UserController {
 
 	@Autowired
-	BookstoreService service;
-	
+	private UserService userService;
+
 	@Autowired
-	BCryptPasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private OTPSenderService otpSender;
+
+	@Autowired
+	private OTPStorageService otpStorage;
 	
 	
 		
 	@PostMapping("/register") 
 	public ResponseEntity<?> registerUser(@RequestBody RegisterRequest requestData){
 					
-		 if (service.isUserAvailableByPhone(requestData.getPhone())) {		 
+		 if (userService.isUserAvailableByPhone(requestData.getPhone())) {		 
 			 
 			 return ResponseEntity.badRequest().body("Phone No. already registerd with another account");
 		 }
 	
-		 if (requestData.getEmail()!=null && service.isUserAvailableByEmail(requestData.getEmail())) {	
+		 if (requestData.getEmail()!=null && userService.isUserAvailableByEmail(requestData.getEmail())) {	
 			 
 			 return ResponseEntity.badRequest().body("Email already registerd with another account");
 			 
@@ -57,7 +62,7 @@ public class UserLoginRegister {
 			 String encodedPwd = passwordEncoder.encode(user.getPassword());
 			 user.setPassword(encodedPwd);
 			 
-			 service.registerUser(user);
+			 userService.registerUser(user);
 			 
 			 LoginResponse response = new LoginResponse();
 			 if(user.getPhone()!=null)
@@ -79,9 +84,8 @@ public class UserLoginRegister {
 		   	
 		if(loginData.getPhone()!=null) {
 			
-			User user = service.fetchUserByPhone(loginData.getPhone());
-		
-			
+			User user = userService.fetchUserByPhone(loginData.getPhone());
+
 			if(user==null) {
 				
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for this phone No.");
@@ -105,7 +109,7 @@ public class UserLoginRegister {
 			
 		}else {
 			
-			User user = service.fetchUserByEmail(loginData.getEmail());
+			User user = userService.fetchUserByEmail(loginData.getEmail());
 			
 			if(user==null) {
 	        	
@@ -131,10 +135,10 @@ public class UserLoginRegister {
 
     }	
 	
-	@GetMapping("/{userId}")
-	public ResponseEntity<?> getWholeUserData( @PathVariable Long userId){
+	@GetMapping("/{user-id}")
+	public ResponseEntity<?> getWholeUserData( @PathVariable(name = "user-id") Long userId){
 		
-		UserResponse userResponse = service.fetchUserDetails(userId);
+		UserResponse userResponse = userService.fetchUserDetails(userId);
 		
 		if(userResponse!=null)	
 			return ResponseEntity.ok(userResponse);	
@@ -142,26 +146,63 @@ public class UserLoginRegister {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User id not found");
 	}
 	
-	@PostMapping("/{userId}/saveAddress")
-	public ResponseEntity<String> saveUserAddress(@RequestBody AddressRequest address,  @PathVariable Long userId){
+	@PostMapping("/{user-id}/save-address")
+	public ResponseEntity<String> saveUserAddress(@RequestBody AddressRequest address,  @PathVariable(name = "user-id") Long userId){
 		
-		service.insertUserAddress(address, userId);
+		userService.insertUserAddress(address, userId);
 		
 		return ResponseEntity.ok("Address saved successfully...");	
 	}
 	
-	@GetMapping("/{userId}/address")
-	public ResponseEntity<?> getUserAddress( @PathVariable Long userId){
+	@GetMapping("/{user-id}/address")
+	public ResponseEntity<?> getUserAddress( @PathVariable(name = "user-id")  Long userId){
 		
-		List<Address> addresses = service.fetchAddressByUserId(userId);
+		List<Address> addresses = userService.fetchAddressByUserId(userId);
 		
 		if(!addresses.isEmpty())
 			return ResponseEntity.ok(addresses);
 		else
 			return ResponseEntity.badRequest().body("Failed..., UserId not found");
 	}
-	
-	
+
+	@GetMapping("/send-otp")
+	public ResponseEntity<String> sendOTP(@RequestParam String email ) throws MessagingException {
+
+		if (!email.isBlank()) {
+			if(userService.isUserAvailableByEmail(email)){
+
+				Integer OTP = otpSender.sendOTPByEmail(email);
+				otpStorage.storeOTP(email, String.valueOf(OTP));
+
+				return ResponseEntity.ok("Sent OTP: "+OTP);
+			}else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for this email");
+			}
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input...");
+    }
+
+	@GetMapping("/verify-otp")
+	public ResponseEntity<String> verifyOTP(@RequestParam String email, @RequestParam String otp ) throws MessagingException {
+
+		if (!email.isBlank() && !otp.isBlank() ) {
+
+			if(userService.isUserAvailableByEmail(email)){
+
+				if(otpStorage.verifyOTP(email, otp)){
+					otpStorage.removeOTP(email);
+					return ResponseEntity.ok("verified successfully.. ");
+				} else {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP verification failed.. ");
+				}
+
+			} else{
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for this email");
+			}
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input...");
+    }
+
 	
 }
 
