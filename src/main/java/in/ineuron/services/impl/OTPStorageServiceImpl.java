@@ -22,27 +22,27 @@ public class OTPStorageServiceImpl implements OTPStorageService {
         executorService.scheduleAtFixedRate(this::cleanUpExpiredOTP, 1, 1, TimeUnit.MINUTES);
     }
 
-    public void storeOTP(String email, String otp) {
+    public void storeOTP(String userName, String otp) {
 
         OTPEntry otpEntry = new OTPEntry(otp, System.currentTimeMillis());
-        otpMap.put(email, otpEntry);
+        otpMap.put(userName, otpEntry);
     }
 
-    public String getStoredOTP(String email) {
-        OTPEntry otpEntry = otpMap.get(email);
+    public String getStoredOTP(String userName) {
+        OTPEntry otpEntry = otpMap.get(userName);
         return otpEntry!=null ? otpEntry.getOtp() : "-1";  // Return -1 if OTP is not found.
     }
 
     @Override
-    public boolean verifyOTP(String email, String otp) {
+    public boolean verifyOTP(String userName, String otp) {
 
-        String storedOTP = getStoredOTP(email);
+        String storedOTP = getStoredOTP(userName);
         return storedOTP.equals(otp);
     }
 
     @Override
-    public void removeOTP(String email) {
-        otpMap.remove(email);
+    public void removeOTP(String userName) {
+        otpMap.remove(userName);
     }
 
     private void cleanUpExpiredOTP() {

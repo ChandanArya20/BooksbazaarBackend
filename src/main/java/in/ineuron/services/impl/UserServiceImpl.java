@@ -6,6 +6,7 @@ import in.ineuron.models.Address;
 import in.ineuron.models.User;
 import in.ineuron.repositories.UserRepository;
 import in.ineuron.services.UserService;
+import in.ineuron.utils.EmailValidator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean isUserAvailableByUserName(String userName) {
+
+        boolean isEmail = EmailValidator.isEmail(userName);
+
+        if(isEmail){
+            return userRepo.existsByEmail(userName);
+        }else {
+            return userRepo.existsByPhone(userName);
+        }
+    }
+
+    @Override
     public void registerUser(User user) {
 
         userRepo.save(user);
@@ -50,6 +63,17 @@ public class UserServiceImpl implements UserService {
     public User fetchUserByEmail(String email) {
 
         return userRepo.findByEmail(email);
+    }
+
+    @Override
+    public User fetchUserByUserName(String userName) {
+        boolean isEmail = EmailValidator.isEmail(userName);
+
+        if(isEmail){
+            return userRepo.findByEmail(userName);
+        }else {
+            return userRepo.findByPhone(userName);
+        }
     }
 
     @Override
@@ -85,6 +109,20 @@ public class UserServiceImpl implements UserService {
 
             userRepo.save(user);
         }
+    }
+
+    @Override
+    public boolean updateUserPassword(Long userId, String newPassword) {
+
+        Optional<User> userOptional = userRepo.findById(userId);
+
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            user.setPassword(newPassword);
+            userRepo.save(user);
+            return true;
+        }
+        return false;
     }
 
     @Override

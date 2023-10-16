@@ -1,11 +1,11 @@
 package in.ineuron.services;
 
 public interface OTPStorageService {
-    void storeOTP(String email, String otp);
-    String getStoredOTP(String email);
+    void storeOTP(String userName, String otp);
+    String getStoredOTP(String userName);
 
-    boolean verifyOTP(String email, String otp);
+    boolean verifyOTP(String userName, String otp);
 
-    void removeOTP(String email);
+    void removeOTP(String userName);
 }
 
