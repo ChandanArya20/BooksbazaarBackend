@@ -172,6 +172,8 @@ public class UserController {
 				if(isEmail){
 					OTP = otpSender.sendOTPByEmail(userName);
 				} else {
+
+					System.out.println(userName);
 					OTP = otpSender.sendOTPByPhone(userName);
 				}
 				otpStorage.storeOTP(userName, String.valueOf(OTP));
