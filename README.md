@@ -16,6 +16,7 @@ Frontend App Link: https://booksbazaar.netlify.app/
 - [API Documentation](#api-documentation)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
+- [Future Enhancements](#future-enhancements)
 - [License](#license)
 
 ## Getting Started
@@ -95,6 +96,11 @@ Note : You can change the host name in local link as per your requirement and ne
 - Before running actual springboot project make sure You have replaced url and password of you DBMS in properties file of project according to enviroment
 
 - This project includes different properties file for different enviroment so by default it will start in development enviroment but if you put 'ENV=prod' in application.properties file that time production enviroment will start to running
+
+## Future Enhancements
+- Wishlist Feature
+- Review and Rating System
+- Discount system
 
 ## Contributing
 If you would like to contribute to the project, please follow the guidelines in CONTRIBUTING.md.
