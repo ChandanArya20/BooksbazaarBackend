@@ -1,8 +1,6 @@
 package in.ineuron.services.impl;
 
-import in.ineuron.dto.AddressRequest;
 import in.ineuron.dto.UserResponse;
-import in.ineuron.models.Address;
 import in.ineuron.models.User;
 import in.ineuron.repositories.UserRepository;
 import in.ineuron.services.UserService;
@@ -77,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse fetchUserDetails(Long userId) {
+    public UserResponse fetchUserDetails(String userId) {
 
         Optional<User> userOptional = userRepo.findById(userId);
         if(userOptional.isPresent()) {
@@ -91,54 +89,5 @@ public class UserServiceImpl implements UserService {
 
         return null;
     }
-
-    @Override 
-    public void insertUserAddress(AddressRequest address, Long userId) {
-
-        System.out.println(address);
-        Optional<User> userOptional = userRepo.findById(userId);
-
-        if(userOptional.isPresent()) {
-
-            User user = userOptional.get();
-            List<Address> userAddress = user.getAddress();
-
-            Address addressObj = new Address();
-            BeanUtils.copyProperties(address, addressObj);
-            userAddress.add(addressObj);
-
-            userRepo.save(user);
-        }
-    }
-
-    @Override
-    public boolean updateUserPassword(Long userId, String newPassword) {
-
-        Optional<User> userOptional = userRepo.findById(userId);
-
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            user.setPassword(newPassword);
-            userRepo.save(user);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public List<Address> fetchAddressByUserId(Long userId) {
-
-        User user = userRepo.findById(userId).orElse(null);
-        List<Address> address=new ArrayList<>();
-
-        if(user!=null)	{
-
-            address=user.getAddress();
-        }
-
-        return address;
-    }
-
-
 
 }
