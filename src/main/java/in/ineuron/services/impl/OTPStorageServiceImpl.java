@@ -2,6 +2,7 @@ package in.ineuron.services.impl;
 
 import in.ineuron.dto.OTPEntry;
 import in.ineuron.services.OTPStorageService;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -46,8 +47,8 @@ public class OTPStorageServiceImpl implements OTPStorageService {
 
     private void cleanUpExpiredOTP() {
         System.out.println("cleanUpExpiredOTP() runs");
-        long currentTime = System.currentTimeMillis();
         // Iterate through the OTP map and remove entries older than 10 minutes.
+        long currentTime = System.currentTimeMillis();
         otpMap.entrySet().removeIf(entry -> (currentTime - entry.getValue().getCreationTime() > 600_000));
     }
 

@@ -1,18 +1,31 @@
 package in.ineuron.models;
 
-import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
+import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-@Data
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Setter
+@NoArgsConstructor
 @Entity
 public class User {
 
 	@Id
-	@GenericGenerator(name = "gen",strategy = "in.ineuron.idgenerator.IdGenerator")
-	@GeneratedValue(generator = "gen")
-	String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
 	
 	@Column(nullable = false)
 	String name;
@@ -26,8 +39,59 @@ public class User {
 	@Column(nullable = false)
 	String password;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	List<Address> address;
+	
+	@OneToMany( mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	List<BookOrder> orders;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	List<Cart> cart;
+	
+	
 
+	public Long getId() {
+		return id;
+	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public List<Address> getAddress() {
+		return address;
+	}
+	
+	@JsonIgnore
+	public List<BookOrder> getOrders() {
+		return orders;
+	}
+		
+	@JsonIgnore
+	public String getPassword() {
+		return password;
+	}
+
+	@JsonIgnore
+	public List<Cart> getCart() {
+		return cart;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", phone=" + phone + ", email=" + email + ", password=" + password
+				+ ", address=" + address + "]";
+	}
+
+		
 }
 
 
