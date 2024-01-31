@@ -22,8 +22,7 @@ public class BookUtils {
 	
 	@Value("${baseURL}")
 	private  String baseURL;
-	
-	
+
 	public BookResponse getBookResponse(Book book){
 		
 		BookResponse bookResponse = new BookResponse();
@@ -31,7 +30,6 @@ public class BookUtils {
 		bookResponse.setImageURL(baseURL+"/api/image/"+book.getCoverImage().getId());
 				
 		return bookResponse;
-		
 	}
 	
 	public List<BookResponse> getBookResponse(Collection<Book> books){
@@ -39,33 +37,25 @@ public class BookUtils {
 		List<BookResponse> bookResponses = new ArrayList<>(); 
 		
 		books.forEach(book->{
-			
 			BookResponse bookResponse = getBookResponse(book);
-			
 			bookResponses.add(bookResponse);
 		});
 		
 		return bookResponses;
-		
 	}
 	
 	public List<BookOrderResponse> getBookOrderResponse(List<BookOrder> orderList){
 		
 		List<BookOrderResponse> orders = new ArrayList<>(); 
 		
-			orderList.forEach(order->{
+		orderList.forEach(order->{
 			
 			BookOrderResponse orderResponse = new BookOrderResponse();
 			BeanUtils.copyProperties(order, orderResponse);
 			
-			int year = order.getOrderDateTime().getYear();
-			int month = order.getOrderDateTime().getMonthValue();
-			int day = order.getOrderDateTime().getDayOfMonth();
-			
-			LocalDate orderDate= LocalDate.of(year, month, day);
+			LocalDate orderDate= order.getOrderDateTime().toLocalDate();
 			orderResponse.setOrderDate(orderDate);
-			
-			
+
 			BookResponse bookResponse = new BookResponse();
 			BeanUtils.copyProperties(order.getBook(), bookResponse);
 			bookResponse.setImageURL(baseURL+"/api/image/"+order.getBook().getCoverImage().getId());
@@ -75,117 +65,104 @@ public class BookUtils {
 		});	
 		
 		return orders;
-		
 	}
 	
 	public List<String> getExactMatchedContainingStrings(List<String> textList, String key){
 		 
-		 List<String> exactMatchTextNames=new ArrayList<>();
+		 List<String> exactMatchTexts=new ArrayList<>();
 		 
 		 for (String text : textList) {
-       	 
             // Replace all special characters with spaces
-            String sanitizedTextName = text.replaceAll("[^a-zA-Z0-9\\s]", " ");
-            
-            String[] words = sanitizedTextName.split("\\s+");
-            
+            String[] sanitizedTexts = text.replaceAll("[^a-zA-Z0-9\\s]", " ")
+					.split("\\s+");;
+
 			// Check if any word in the book name is an exact match to the query
-            for (String word : words) {
-           	 
+            for (String word : sanitizedTexts) {
                 if (word.equalsIgnoreCase(key)) {
-               	 
-               	 exactMatchTextNames.add(text);
-                    break;
+					 exactMatchTexts.add(text);
+						break;
                 }
             }
         }
-		 
-		 return exactMatchTextNames;
+
+		 return exactMatchTexts;
 	}
 	
 	public List<Book> getExactTitleMatchedContainingBooks(List<Book> bookList, String key){
 		
-		List<Book> exactMatchBooks=new ArrayList<>();
+		List<Book> matchedooks=new ArrayList<>();
 		
 		for (Book book : bookList) {
-			
 			// Replace all special characters with spaces
-			String sanitizedTextName = book.getTitle().replaceAll("[^a-zA-Z0-9\\s]", " ");
-			
-			String[] words = sanitizedTextName.split("\\s+");
-			
+			String[] sanitizedTexts = book.getDescription()
+					.replaceAll("[^a-zA-Z0-9\\s]", " ")
+					.split("\\s+");
+
 			// Check if any word in the book name is an exact match to the query
-			for (String word : words) {
-				
+			for (String word : sanitizedTexts) {
 				if (word.equalsIgnoreCase(key)) {
-					
-					exactMatchBooks.add(book);
+					matchedooks.add(book);
 					break;
 				}
 			}
 		}
-		
-		return exactMatchBooks;
+
+		return matchedooks;
 	}
+
 	public List<Book> getExactCategoryMatchedContainingBooks(List<Book> bookList, String key){
 		
-		List<Book> exactMatchBooks=new ArrayList<>();
-		
+		List<Book> matchedooks=new ArrayList<>();
+
 		for (Book book : bookList) {
-			
 			// Replace all special characters with spaces
-			String sanitizedTextName = book.getCategory().replaceAll("[^a-zA-Z0-9\\s]", " ");
-			
-			String[] words = sanitizedTextName.split("\\s+");
-			
+			String[] sanitizedTexts = book.getDescription()
+					.replaceAll("[^a-zA-Z0-9\\s]", " ")
+					.split("\\s+");
+
 			// Check if any word in the book name is an exact match to the query
-			for (String word : words) {
-				
+			for (String word : sanitizedTexts) {
 				if (word.equalsIgnoreCase(key)) {
-					
-					exactMatchBooks.add(book);
+					matchedooks.add(book);
 					break;
 				}
 			}
 		}
-		
-		return exactMatchBooks;
+
+		return matchedooks;
 	}
+
 	public List<Book> getExactDescriptionMatchedContainingBooks(List<Book> bookList, String key){
 		
-		List<Book> exactMatchBooks=new ArrayList<>();
+		List<Book> matchedooks=new ArrayList<>();
 		
 		for (Book book : bookList) {
-			
 			// Replace all special characters with spaces
-			String sanitizedTextName = book.getDescription().replaceAll("[^a-zA-Z0-9\\s]", " ");
-			
-			String[] words = sanitizedTextName.split("\\s+");
-			
+			String[] sanitizedTexts = book.getDescription()
+					.replaceAll("[^a-zA-Z0-9\\s]", " ")
+					.split("\\s+");
+
 			// Check if any word in the book name is an exact match to the query
-			for (String word : words) {
-				
+			for (String word : sanitizedTexts) {
 				if (word.equalsIgnoreCase(key)) {
-					
-					exactMatchBooks.add(book);
+					matchedooks.add(book);
 					break;
 				}
 			}
 		}
 		
-		return exactMatchBooks;
+		return matchedooks;
 	}
 	
 	public List<String> filterStopWords(String[] list){
 
-			Set<String> stopWords=new HashSet<>(Arrays.asList("and","in","the","a","for"));
+			Set<String> stopWords=Set.of("and","in","the","a","for");
 			
 			//Filters stopWords
-			List<String> filteredList = Arrays
-										   .stream(list)
-										   .filter(token->!stopWords.contains(token))
-										   .toList();
-			return filteredList;
+			return Arrays.stream(list)
+					.filter(token->!stopWords.contains(token))
+					.toList();
+
 	}
 	
 
