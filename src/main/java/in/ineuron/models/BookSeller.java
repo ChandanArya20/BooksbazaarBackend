@@ -13,9 +13,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "book_sellers")
-@Setter
-@ToString
-@NoArgsConstructor
+@Data
 public class BookSeller {
 
     @Id
@@ -47,7 +45,6 @@ public class BookSeller {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	List<Address> address;
 
-    
 	public Long getId() {
 		return id;
 	}
@@ -84,9 +81,6 @@ public class BookSeller {
 	public List<Address> getAddress() {
 		return address;
 	}
-       
-    
-    
 
 }
 

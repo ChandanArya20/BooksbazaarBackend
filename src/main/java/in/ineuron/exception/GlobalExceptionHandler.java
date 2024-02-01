@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-//    @ResponseBody
     public ResponseEntity<ExceptionDetails> handleException(Exception ex) {
     	
     	System.out.println(ex);

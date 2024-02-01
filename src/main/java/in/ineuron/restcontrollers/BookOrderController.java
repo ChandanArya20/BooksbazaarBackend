@@ -42,8 +42,7 @@ public class BookOrderController {
 	
 	@Value("${baseURL}")
 	private String baseURL;
-	
-	
+
 	@PostMapping("place-order")
 	public ResponseEntity<String> submitOrder( @RequestBody BookOrderRequest[] orderData){
 		 
@@ -55,12 +54,11 @@ public class BookOrderController {
 			BeanUtils.copyProperties(order, bookOrder);
 			
 			int deliveryTime=order.getBook().getDeliveryTime();
-			LocalDate deliverydate=LocalDate.now().plusDays(deliveryTime);
-			bookOrder.setDeliveryDate(deliverydate);
+			LocalDate deliveryDate=LocalDate.now().plusDays(deliveryTime);
+			bookOrder.setDeliveryDate(deliveryDate);
 			
 			bookList.add(bookOrder);
 			bookService.decreaseBookStock(bookOrder.getBook().getId(), bookOrder.getQuantity());
-			
 		}
 		bookOrderSer.insertOrder(bookList);
 		return  ResponseEntity.ok("Order submitted successfully...");
@@ -76,7 +74,6 @@ public class BookOrderController {
 		Collections.reverse(orders);
 			
 		return ResponseEntity.ok(orders);
-		
 	}
 	
 	@GetMapping("/seller/{seller-id}/all-orders")
@@ -86,10 +83,8 @@ public class BookOrderController {
 		Collections.reverse(sellerOrders);
 		
 		return ResponseEntity.ok(sellerOrders);
-		
 	}
-	
-	
+
 	@PatchMapping("/{order-id}")
 	public ResponseEntity<String> changeBookOrderStatus(@PathVariable(name = "order-id") Long orderId, @RequestParam String status) {
 		
@@ -101,12 +96,12 @@ public class BookOrderController {
 		
 		Boolean changeOrderStatus = bookOrderSer.changeOrderStatus(orderId, status);
 		
-		if(changeOrderStatus)		
-			return ResponseEntity.ok("status updated with "+status);		
-		else	
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("status updation failed...");	 
+		if(changeOrderStatus) {
+			return ResponseEntity.ok("status updated with "+status);
+		}else	{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("status updation failed...");
+		}
 	}
-	
 	
 }
 

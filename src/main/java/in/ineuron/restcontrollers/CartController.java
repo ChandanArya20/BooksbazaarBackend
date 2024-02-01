@@ -35,8 +35,6 @@ public class CartController {
 	@Value("${baseURL}")
 	private String baseURL;
 	
-	
-	
 	@PostMapping("/add-to-cart")
 	public ResponseEntity<String> addToCart(@RequestBody Cart cart){
 
@@ -50,10 +48,7 @@ public class CartController {
 		
 		User user = new User();
 		user.setId(userId);
-		
 		List<Cart> cartList = cartService.getAllCartDataByUser(user);
-
-		
 		List<CartResponse> cartResponseList=new ArrayList<>();
 		
 		cartList.forEach((cart)->{
@@ -76,7 +71,6 @@ public class CartController {
 	public ResponseEntity<String> updateCart(@RequestBody Cart cart){
 
 		cartService.updateCartItemQuantity(cart);
-		
 		return ResponseEntity.ok("Cart Item quantity got updated...");
 	}
 	
@@ -84,7 +78,6 @@ public class CartController {
 	public ResponseEntity<String> deleteCart(@RequestBody Cart[] carts){
 
 		cartService.deleteCartItems(carts);
-		
 		return ResponseEntity.ok("Cart Item quantity got updated...");		
 	}
 	

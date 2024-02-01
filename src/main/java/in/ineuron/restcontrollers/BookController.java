@@ -50,7 +50,6 @@ public class BookController {
     @Autowired
     BookUtils bookUtils;
 
-
     @PostMapping("seller/add-book")
     public ResponseEntity<?> updateBookData(@RequestParam MultipartFile coverImage, @RequestParam String bookInfo) throws IOException {
 
@@ -80,7 +79,6 @@ public class BookController {
         List<BookResponse> bookResponseList = bookUtils.getBookResponse(bookList);
 
         return ResponseEntity.ok(bookResponseList);
-
     }
 
     @GetMapping("/{id}")
@@ -98,7 +96,6 @@ public class BookController {
             return ResponseEntity.ok(bookResponse);
 
         } else {
-
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("book not found for this book id");
         }
     }
@@ -142,7 +139,6 @@ public class BookController {
             bookService.activateBookStatus(id);
 
         return ResponseEntity.ok("Status changed successfully");
-
     }
 
     @GetMapping("/search/title")

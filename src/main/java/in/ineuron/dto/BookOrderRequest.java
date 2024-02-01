@@ -4,8 +4,13 @@ import in.ineuron.models.Address;
 import in.ineuron.models.Book;
 import in.ineuron.models.User;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Setter
+@Getter
+@ToString
 public class BookOrderRequest {
     
     private Book book;

@@ -49,9 +49,9 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public void registerSeller(BookSeller seller) {
+    public BookSeller registerSeller(BookSeller seller) {
 
-        sellerRepo.save(seller);
+        return sellerRepo.save(seller);
     }
 
     @Override

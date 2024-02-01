@@ -4,18 +4,13 @@ package in.ineuron.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
 public class AddressRequest {
-	
-	
+
 	@NotBlank(message = "Name should not be empty")
 	@Size(min=3, message = "Name should be greater than 2")
 	String name;
@@ -42,35 +37,5 @@ public class AddressRequest {
 	
 	@NotBlank
 	String addressType;
-	
-
-	public void setName(String name) {
-		this.name = name.trim();
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone.trim();
-	}
-
-	public void setPincode(String pincode) {
-		this.pincode = pincode.trim();
-	}
-
-	public void setStreetName(String streetName) {
-		this.streetName = streetName.trim();
-	}
-
-	public void setCity(String city) {
-		this.city = city.trim();
-	}
-
-	public void setState(String state) {
-		this.state = state.trim();
-	}
-
-	public void setAddressType(String addressType) {
-		this.addressType = addressType.trim();
-	}	
-
 	
 }

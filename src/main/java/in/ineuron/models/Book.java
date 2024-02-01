@@ -25,12 +25,10 @@ public class Book {
 
     @Column(nullable = false)
     private String description;
-    
-   
+
     @CreationTimestamp
     private LocalDateTime bookListingTime;
-    
-    
+
     private String isbn;
 
     @Lob

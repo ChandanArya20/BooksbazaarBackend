@@ -9,8 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import in.ineuron.models.BookSeller;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class BookResponse {
 	
 	    private Long id;
@@ -57,7 +62,5 @@ public class BookResponse {
 //	    private double rating;
 	    
 //	    private String comments;
-	    
 
-	
 }

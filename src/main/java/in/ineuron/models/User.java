@@ -19,7 +19,6 @@ import lombok.ToString;
 
 
 @Setter
-@NoArgsConstructor
 @Entity
 public class User {
 
@@ -47,8 +46,6 @@ public class User {
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<Cart> cart;
-	
-	
 
 	public Long getId() {
 		return id;
@@ -90,8 +87,6 @@ public class User {
 		return "User [id=" + id + ", name=" + name + ", phone=" + phone + ", email=" + email + ", password=" + password
 				+ ", address=" + address + "]";
 	}
-
-		
 }
 
 

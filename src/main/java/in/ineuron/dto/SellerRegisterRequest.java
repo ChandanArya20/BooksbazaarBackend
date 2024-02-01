@@ -6,15 +6,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
 public class SellerRegisterRequest {
 
 	@NotBlank(message = "Name should not be empty")
@@ -44,35 +40,4 @@ public class SellerRegisterRequest {
     @Pattern(regexp = "^(?!.*\\s).*$",
              message = "Space is not allowed between")
 	String password;
-
-
-	public void setName(String name) {
-		this.name = name.trim();
-	}
-
-	
-	public void setPhone(String phone) {
-		this.phone = phone.trim();
-	}
-	
-	public void setEmail(String email) {
-		this.email = email.trim();
-	}
-
-
-	public void setPassword(String password) {
-		this.password = password.trim();
-	}
-
-
-	public void setLocation(String location) {
-		this.location = location.trim();
-	}
-
-
-	public void setSellerId(String sellerId) {
-		this.sellerId = sellerId.trim();
-	}
-	
-	
 }

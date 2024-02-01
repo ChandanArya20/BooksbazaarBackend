@@ -26,7 +26,6 @@ public class ImageFileController {
 	@Value("${baseURL}")
 	private String baseURL;
 	
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getBookImageById(@PathVariable Long id){
 		
@@ -40,7 +39,6 @@ public class ImageFileController {
 					.contentType(MediaType.valueOf(imageFile.getType()))
 					.body(imageFile.getImageData());
 		}else {
-			
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Image not found for this image id");
 		}		
 	}

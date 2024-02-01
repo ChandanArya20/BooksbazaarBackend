@@ -35,47 +35,33 @@ public class UserController {
 
 	@Autowired
 	private OTPStorageService otpStorage;
-	
-	
-		
+
 	@PostMapping("/register") 
 	public ResponseEntity<?> registerUser(@RequestBody RegisterRequest requestData){
 					
-		 if (userService.isUserAvailableByPhone(requestData.getPhone())) {		 
-			 
+		 if (userService.isUserAvailableByPhone(requestData.getPhone())) {
 			 return ResponseEntity.badRequest().body("Phone No. already registered with another account");
 		 }
-	
-		 if (requestData.getEmail()!=null && userService.isUserAvailableByEmail(requestData.getEmail())) {	
-			 
+
+		 if (requestData.getEmail()!=null && userService.isUserAvailableByEmail(requestData.getEmail())) {
 			 return ResponseEntity.badRequest().body("Email already registered with another account");
-			 
+
 		 }else {
 			 
 			 User user = new User();
 			 BeanUtils.copyProperties(requestData, user);
-			 
-			 //encript password
-			 String encodedPwd = passwordEncoder.encode(user.getPassword());
-			 user.setPassword(encodedPwd);
-			 
-			 userService.registerUser(user);
-			 
-			 LoginResponse response = new LoginResponse();
-			 if(user.getPhone()!=null)
-				 response.setToken((user.getPhone()+user.getName()).replace(" ",""));
-			 else
-				 response.setToken((user.getEmail()+user.getName()).replace(" ",""));
-				 
+			 //encrypt password
+			 user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+			 user = userService.registerUser(user);
+
 			 UserResponse userResponse = new UserResponse();
 			 BeanUtils.copyProperties(user, userResponse);
-			 response.setUser(userResponse);
-			
-			 return ResponseEntity.ok(response);
+
+			 return ResponseEntity.ok(userResponse);
 		 }        
 	}
-		 
-	
+
 	@PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginData) {
 		   	
@@ -84,24 +70,17 @@ public class UserController {
 			User user = userService.fetchUserByPhone(loginData.getPhone());
 
 			if(user==null) {
-				
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for this phone No.");
 			}
 			else if (!passwordEncoder.matches(loginData.getPassword(), user.getPassword()) ) {
-				
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
 				
 			}else {
 				
-				LoginResponse response = new LoginResponse();
-				
 				UserResponse userResponse = new UserResponse();
 				BeanUtils.copyProperties(user, userResponse);
-				response.setUser(userResponse);
 				
-				response.setToken((user.getPhone()+user.getName()).replace(" ",""));
-				
-				return ResponseEntity.ok(response);
+				return ResponseEntity.ok(userResponse);
 			}
 			
 		}else {
@@ -109,27 +88,19 @@ public class UserController {
 			User user = userService.fetchUserByEmail(loginData.getEmail());
 			
 			if(user==null) {
-	        	
 	        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for this email");
 	        }
 	        else if (!passwordEncoder.matches(loginData.getPassword(), user.getPassword())) {
 	        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
 	        	
 	        }else {
-	        	LoginResponse response = new LoginResponse();
 	        	
 	        	UserResponse userResponse = new UserResponse();
 				BeanUtils.copyProperties(user, userResponse);
-				response.setUser(userResponse);
-				response.setUser(userResponse);
 				
-				response.setToken((user.getEmail()+user.getName()).replace(" ", ""));
-				
-				return ResponseEntity.ok(response);
+				return ResponseEntity.ok(userResponse);
 	        }
 		}
-		
-
     }	
 	
 	@GetMapping("/{user-id}")
@@ -165,88 +136,66 @@ public class UserController {
 	@GetMapping("/send-otp")
 	public ResponseEntity<String> sendOTPByPhone(@RequestParam("user-name") String userName ) throws MessagingException {
 
-		if (!userName.isBlank()) {
-			if(userService.isUserAvailableByUserName(userName)){
-				boolean isEmail = EmailValidator.isEmail(userName);
-				Integer OTP=-1;
-				if(isEmail){
-					OTP = otpSender.sendOTPByEmail(userName);
-				} else {
+		if(userService.isUserAvailableByUserName(userName)){
+			boolean isEmail = EmailValidator.isEmail(userName);
+			Integer OTP=-1;
+			if(isEmail){
+				OTP = otpSender.sendOTPByEmail(userName);
+			} else {
 
-					System.out.println(userName);
-					OTP = otpSender.sendOTPByPhone(userName);
-				}
-				otpStorage.storeOTP(userName, String.valueOf(OTP));
-
-				return ResponseEntity.ok("Sent OTP: "+OTP);
-			}else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for "+userName);
+				System.out.println(userName);
+				OTP = otpSender.sendOTPByPhone(userName);
 			}
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input...");
-    }
+			otpStorage.storeOTP(userName, String.valueOf(OTP));
 
+			return ResponseEntity.ok("Sent OTP: "+OTP);
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for "+userName);
+		}
+    }
 
 	@GetMapping("/verify-otp")
 	public ResponseEntity<String> verifyOTPByPhone(
 			@RequestParam("user-name") String userName,
 			@RequestParam String otp ) throws MessagingException {
 
-		if (!userName.isBlank() && !otp.isBlank() ){
-			if(userService.isUserAvailableByUserName(userName)){
+		if(userService.isUserAvailableByUserName(userName)){
 
-				if(otpStorage.verifyOTP(userName, otp)){
-					otpStorage.removeOTP(userName);
-					return ResponseEntity.ok("verified successfully.. ");
-				} else {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP verification failed.. ");
-				}
-
-			} else{
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for "+userName);
+			if(otpStorage.verifyOTP(userName, otp)){
+				otpStorage.removeOTP(userName);
+				return ResponseEntity.ok("verified successfully.. ");
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("OTP verification failed.. ");
 			}
+
+		} else{
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found for "+userName);
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input...");
     }
+
     @PostMapping("/otp-verified/update-password")
     public ResponseEntity<?> UpdateUserPasswordAfterOTPVerified(
 			@RequestBody UpdateUserPasswordDTO userCredential
 	){
-		System.out.println(userCredential);
+
 		String userName=userCredential.getUserName();
 		String newPassword=userCredential.getNewPassword();
 
-		if (!userName.isBlank() && !newPassword.isBlank() ) {
+		User user= userService.fetchUserByUserName(userName);
 
-            User user= userService.fetchUserByUserName(userName);
+		if(user!=null){
+			String encodedPass = passwordEncoder.encode(newPassword);
+			userService.updateUserPassword(user.getId(), encodedPass);
 
-			if(user!=null){
-				String encodedPass = passwordEncoder.encode(newPassword);
-				userService.updateUserPassword(user.getId(), encodedPass);
+			UserResponse userResponse = new UserResponse();
+			BeanUtils.copyProperties(user, userResponse);
 
-				LoginResponse response = new LoginResponse();
+			return ResponseEntity.ok(userResponse);
 
-				UserResponse userResponse = new UserResponse();
-				BeanUtils.copyProperties(user, userResponse);
-				response.setUser(userResponse);
-
-				boolean isEmail = EmailValidator.isEmail(userName);
-				if(isEmail){
-					response.setToken((user.getEmail()+user.getName()).replace(" ",""));
-				} else {
-					response.setToken((user.getPhone()+user.getName()).replace(" ",""));
-				}
-
-				return ResponseEntity.ok(response);
-
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User name not found...");
-			}
-        }
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input...");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User name not found...");
+		}
     }
-
-	
 }
 
 

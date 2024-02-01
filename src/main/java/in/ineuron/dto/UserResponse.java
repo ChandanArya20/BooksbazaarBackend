@@ -4,8 +4,13 @@ import java.util.List;
 
 import in.ineuron.models.Address;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Setter
+@Getter
+@ToString
 public class UserResponse {
 	
 	Long id;

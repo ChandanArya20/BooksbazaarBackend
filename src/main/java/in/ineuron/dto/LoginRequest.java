@@ -4,15 +4,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
-@NoArgsConstructor
 public class LoginRequest {
 
 	@NotBlank(message = "Phone No. should not be empty")
@@ -30,18 +26,4 @@ public class LoginRequest {
              message = "Space is allowed")
 	String password;
 
-
-	public void setPhone(String phone) {
-		this.phone = phone.trim();
-	}
-
-	public void setEmail(String email) {
-		this.email = email.trim();
-	}
-	
-	public void setPassword(String password) {
-		this.password = password.trim();
-	}
-	
-	
 }
