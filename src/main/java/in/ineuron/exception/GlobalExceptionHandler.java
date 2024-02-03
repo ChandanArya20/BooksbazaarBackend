@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(StockNotAvailableException.class)
+    public ResponseEntity<ExceptionDetails> handleStockNotAvailableException(StockNotAvailableException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ExceptionDetails(exception.toString(), exception.getMessage(), LocalDateTime.now()));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionDetails> handleException(Exception ex) {
-    	
-    	System.out.println(ex);
+    public ResponseEntity<ExceptionDetails> handleException(Exception exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionDetails(LocalDateTime.now(), ex.getMessage(), "Something went wrong..."));
+                .body(new ExceptionDetails(exception.toString(), exception.getMessage(), LocalDateTime.now()));
     }
 }
 

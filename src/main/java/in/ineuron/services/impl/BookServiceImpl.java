@@ -1,6 +1,7 @@
 package in.ineuron.services.impl;
 
 import in.ineuron.dto.BookResponse;
+import in.ineuron.exception.StockNotAvailableException;
 import in.ineuron.models.Book;
 import in.ineuron.models.BookSeller;
 import in.ineuron.models.ImageFile;
@@ -257,24 +258,34 @@ public class BookServiceImpl implements BookService {
 
         Optional<Book> bookOptional = bookRepo.findById(bookId);
         if(bookOptional.isPresent()) {
-
             Book book = bookOptional.get();
-            book.setStockAvailability(book.getStockAvailability()+stockValue);
-            bookRepo.save(book);
+
+            synchronized (book){
+                book.setStockAvailability(book.getStockAvailability()+stockValue);
+                bookRepo.save(book);
+                return true;
+            }
         }
-        return null;
+        return false;
     }
 
     @Override
     public Boolean decreaseBookStock(Long bookId, Integer stockValue) {
         Optional<Book> bookOptional = bookRepo.findById(bookId);
         if(bookOptional.isPresent()) {
-
             Book book = bookOptional.get();
-            book.setStockAvailability(book.getStockAvailability()-stockValue);
-            bookRepo.save(book);
+
+            synchronized (book) {  // Synchronized block on the book object
+                if(book.getStockAvailability() - stockValue >= 0) {
+                    book.setStockAvailability(book.getStockAvailability() - stockValue);
+                    bookRepo.save(book);
+                    return true;
+                } else {
+                    throw new StockNotAvailableException("Stock not available for requested quantity " + stockValue);
+                }
+            }
         }
-        return null;
+        return false;
     }
 
 
