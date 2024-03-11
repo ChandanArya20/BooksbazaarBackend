@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +20,15 @@ import in.ineuron.models.BookOrder;
 
 @Component
 public class BookUtils {
-	
-	@Value("${baseURL}")
-	private  String baseURL;
+
+	@Autowired
+	private AppUtils appUtils;
 
 	public BookResponse getBookResponse(Book book){
 		
 		BookResponse bookResponse = new BookResponse();
 		BeanUtils.copyProperties(book, bookResponse);
-		bookResponse.setImageURL(baseURL+"/api/image/"+book.getCoverImage().getId());
+		bookResponse.setImageURL(appUtils.getBaseURL()+"/api/image/"+book.getCoverImage().getId());
 				
 		return bookResponse;
 	}
@@ -58,7 +59,7 @@ public class BookUtils {
 
 			BookResponse bookResponse = new BookResponse();
 			BeanUtils.copyProperties(order.getBook(), bookResponse);
-			bookResponse.setImageURL(baseURL+"/api/image/"+order.getBook().getCoverImage().getId());
+			bookResponse.setImageURL(appUtils.getBaseURL()+"/api/image/"+order.getBook().getCoverImage().getId());
 			
 			orderResponse.setBook(bookResponse);
 			orders.add(orderResponse);
@@ -74,7 +75,7 @@ public class BookUtils {
 		 for (String text : textList) {
             // Replace all special characters with spaces
             String[] sanitizedTexts = text.replaceAll("[^a-zA-Z0-9\\s]", " ")
-					.split("\\s+");;
+					.split("\\s+");
 
 			// Check if any word in the book name is an exact match to the query
             for (String word : sanitizedTexts) {
@@ -87,73 +88,7 @@ public class BookUtils {
 
 		 return exactMatchTexts;
 	}
-	
-	public List<Book> getExactTitleMatchedContainingBooks(List<Book> bookList, String key){
-		
-		List<Book> matchedooks=new ArrayList<>();
-		
-		for (Book book : bookList) {
-			// Replace all special characters with spaces
-			String[] sanitizedTexts = book.getDescription()
-					.replaceAll("[^a-zA-Z0-9\\s]", " ")
-					.split("\\s+");
 
-			// Check if any word in the book name is an exact match to the query
-			for (String word : sanitizedTexts) {
-				if (word.equalsIgnoreCase(key)) {
-					matchedooks.add(book);
-					break;
-				}
-			}
-		}
-
-		return matchedooks;
-	}
-
-	public List<Book> getExactCategoryMatchedContainingBooks(List<Book> bookList, String key){
-		
-		List<Book> matchedooks=new ArrayList<>();
-
-		for (Book book : bookList) {
-			// Replace all special characters with spaces
-			String[] sanitizedTexts = book.getDescription()
-					.replaceAll("[^a-zA-Z0-9\\s]", " ")
-					.split("\\s+");
-
-			// Check if any word in the book name is an exact match to the query
-			for (String word : sanitizedTexts) {
-				if (word.equalsIgnoreCase(key)) {
-					matchedooks.add(book);
-					break;
-				}
-			}
-		}
-
-		return matchedooks;
-	}
-
-	public List<Book> getExactDescriptionMatchedContainingBooks(List<Book> bookList, String key){
-		
-		List<Book> matchedooks=new ArrayList<>();
-		
-		for (Book book : bookList) {
-			// Replace all special characters with spaces
-			String[] sanitizedTexts = book.getDescription()
-					.replaceAll("[^a-zA-Z0-9\\s]", " ")
-					.split("\\s+");
-
-			// Check if any word in the book name is an exact match to the query
-			for (String word : sanitizedTexts) {
-				if (word.equalsIgnoreCase(key)) {
-					matchedooks.add(book);
-					break;
-				}
-			}
-		}
-		
-		return matchedooks;
-	}
-	
 	public List<String> filterStopWords(String[] list){
 
 			Set<String> stopWords=Set.of("and","in","the","a","for");

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,7 +29,6 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     BookUtils bookUtils;
-
 
     @Override
     public void insertBookInfo(Book book) {
@@ -80,177 +80,67 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponse> searchBooksByTitle(String query, Integer page, Integer size) {
-
-        // To hold unique books without duplication, maintaining insertion order.
-        Set<Book> uniqueBooks = new LinkedHashSet<>();
-
-        // Try to fetch books with titles that start with the query.
-        List<Book> books = bookRepo.findBooksStartWith(query, PageRequest.of(0, size));
-        uniqueBooks.addAll(books);
-
-        // Tokenize the query to handle multi-word searches.
-        String[] tokens = query.toLowerCase().split("\\s+");
-
-        List<String> searchQueryList = bookUtils.filterStopWords(tokens);
-
-
-        // Search for each individual query term.
-        for (String singleQuery : searchQueryList) {
-
-            List<Book> allBooks = bookRepo.
-                    findByTitleContainingIgnoreCaseAndStatus(singleQuery, PageRequest.of(page-1,size*5), true);
-
-            List<Book> exactMatchedBooks = bookUtils.getExactTitleMatchedContainingBooks(allBooks, singleQuery);
-
-            uniqueBooks.addAll(exactMatchedBooks);
-
-            if(uniqueBooks.size()>size) {
-                break;
-            }
-        }
-
-        if(uniqueBooks.size()>size) {
-            return bookUtils.getBookResponse(uniqueBooks).subList(0, size-1);
-        }
-        return bookUtils.getBookResponse(uniqueBooks);
-    }
-
-    @Override
-    public List<BookResponse> searchBooksByCategory(String query, Integer page, Integer size) {
-
-        // To hold unique books without duplication, maintaining insertion order.
-        Set<Book> uniqueBooks = new LinkedHashSet<>();
-
-        // Tokenize the query to handle multi-word searches.
-        String[] tokens = query.toLowerCase().split("\\s+");
-
-        List<String> searchQueryList = bookUtils.filterStopWords(tokens);
-
-
-        // Search for each individual query term.
-        for (String singleQuery : searchQueryList) {
-
-            List<Book> allBooks = bookRepo.
-                    findByCategoryContainingIgnoreCaseAndStatus(singleQuery, PageRequest.of(page-1,size*5), true);
-
-            List<Book> exactMatchedBooks = bookUtils.getExactCategoryMatchedContainingBooks(allBooks, singleQuery);
-
-            uniqueBooks.addAll(exactMatchedBooks);
-
-            if(uniqueBooks.size()>size) {
-                break;
-            }
-        }
-
-        if(uniqueBooks.size()>size) {
-            return bookUtils.getBookResponse(uniqueBooks).subList(0, size-1);
-        }
-        return bookUtils.getBookResponse(uniqueBooks);
-    }
-
-    @Override
-    public List<BookResponse> searchBooksByDescription(String query, Integer page, Integer size) {
-
-        // To hold unique books without duplication, maintaining insertion order.
-        Set<Book> uniqueBooks = new LinkedHashSet<>();
-
-        // Tokenize the query to handle multi-word searches.
-        String[] tokens = query.toLowerCase().split("\\s+");
-
-        List<String> searchQueryList = bookUtils.filterStopWords(tokens);
-
-
-        // Search for each individual query term.
-        for (String singleQuery : searchQueryList) {
-
-            List<Book> allBooks = bookRepo.
-                    findByDescriptionContainingIgnoreCaseAndStatus(singleQuery, PageRequest.of(page-1,size*5), true);
-
-            List<Book> exactMatchedBooks = bookUtils.getExactDescriptionMatchedContainingBooks(allBooks, singleQuery);
-
-            uniqueBooks.addAll(exactMatchedBooks);
-
-            if(uniqueBooks.size()>size) {
-                break;
-            }
-        }
-
-        if(uniqueBooks.size()>size) {
-            return bookUtils.getBookResponse(uniqueBooks).subList(0, size-1);
-        }
-        return bookUtils.getBookResponse(uniqueBooks);
-    }
-
-    @Override
     public List<BookResponse> searchBooks(String query, Integer page, Integer size) {
 
-        System.out.println(page+" "+size);
+            List<Book> allBooks = bookRepo.
+                   searchInTitleCategoryDescription(query, PageRequest.of(page-1,size));
 
-        Set<BookResponse> bookList = new LinkedHashSet<>();
-        List<BookResponse> searchedBooks;
+        return bookUtils.getBookResponse(allBooks);
+    }
 
-        searchedBooks = searchBooksByTitle(query, page,size);
-        bookList.addAll(searchedBooks);
+    @Override
+    public List<BookResponse> enhancedSearchBooks(String query, Integer page, Integer size) {
 
+        // To hold unique books without duplication, maintaining insertion order.
+        Set<Book> uniqueBooks = new LinkedHashSet<>();
 
-        searchedBooks = searchBooksByCategory(query, page,size);
-        bookList.addAll(searchedBooks);
+        // Tokenize the query to handle multi-word searches.
+        String[] tokens = query.toLowerCase().split("\\s+");
 
-        searchedBooks = searchBooksByDescription(query, page,size);
-        bookList.addAll(searchedBooks);
+        List<String> searchQueryList = bookUtils.filterStopWords(tokens);
 
+        int currentPage = 0;
+        int finalSize = page * size;
 
-        List<BookResponse> pagedResults=new ArrayList<>();
+        while ( uniqueBooks.size() < finalSize) {
+            int fetchedRecords = 0;
+            int iteration=0;
+            for (String singleQuery : searchQueryList) {
 
-        System.out.println("First time  :"+bookList.size());
-        for(BookResponse b:bookList) {
-            System.out.println(b.getId()+" ");
-        }
+                // Fetch additional results starting from page 0.
+                List<Book> booksForTerm = bookRepo
+                        .searchInTitleCategoryDescription(singleQuery, PageRequest.of(currentPage, size * 5));
 
+                // Add the remaining unique books.
+                uniqueBooks.addAll(booksForTerm);
 
-        if(bookList.size()<size) {
-            List<Book> books;
+                fetchedRecords += booksForTerm.size();
+                iteration++;
 
-            books=bookRepo.findByTitleContainingIgnoreCaseAndStatus(query, PageRequest.of(page-1, size),true);
-            searchedBooks = bookUtils.getBookResponse(books);
-            bookList.addAll(searchedBooks);
-            System.out.println("Book length: "+books.size());
-            for(Book b:books) {
-                System.out.println(b.getId()+" ");
+                if (uniqueBooks.size() >= finalSize) {
+                    break;
+                }
             }
 
-
-            books=bookRepo.findByCategoryContainingIgnoreCaseAndStatus(query, PageRequest.of(page-1, size),true);
-            searchedBooks = bookUtils.getBookResponse(books);
-            bookList.addAll(searchedBooks);
-            System.out.println("Book length: "+books.size());
-            for(Book b:books) {
-                System.out.println(b.getId()+" ");
+            if (uniqueBooks.size() >= finalSize || fetchedRecords < iteration*size * 5) {
+                break;
             }
 
-            books=bookRepo.findByDescriptionContainingIgnoreCaseAndStatus(query, PageRequest.of(page-1, size),true);
-            searchedBooks = bookUtils.getBookResponse(books);
-            bookList.addAll(searchedBooks);
-            System.out.println("Book length: "+books.size());
-            for(Book b:books) {
-                System.out.println(b.getId()+" ");
-            }
-
+            // Move to the next page.
+            currentPage++;
         }
 
-        int startIndex = (page - 1) * size;
-        int endIndex = Math.min(startIndex + size, bookList.size()); // Ensure endIndex doesn't exceed the list size
+        System.out.println("Size after fetching :"+uniqueBooks.size());
 
-        if(startIndex>endIndex) {
-            return pagedResults;
-        }else {
-            pagedResults.addAll(bookList);
-            System.out.println("Page :"+pagedResults.size());
-            System.out.println(startIndex+" "+endIndex);
-            return pagedResults.subList(startIndex, endIndex);
-        }
+        // Limit the result to the desired size and keep the last 'size' elements.
+        List<Book> lastUniqueBooks = uniqueBooks.stream()
+                .limit(finalSize)
+                .skip(Math.max(0, finalSize - size))
+                .toList();
 
+        System.out.println("Size after final: " + lastUniqueBooks.size());
+
+        return bookUtils.getBookResponse(lastUniqueBooks);
     }
 
     @Override
@@ -294,41 +184,9 @@ public class BookServiceImpl implements BookService {
 
         PageRequest pageRequest = PageRequest.of(0, size); // Limit to the first 10 results
 
-        List<String> bookList = bookRepo.findBookNamesStartWith(query, pageRequest);
-
-        return bookList;
+        return bookRepo.findBookNamesStartWith(query, pageRequest);
     }
 
-    @Override
-    public List<String> getSuggestedBookNamesByExactMatch(String query, Integer size) {
-
-        List<String> exactMatchBookNames = new ArrayList<>();
-        PageRequest pageRequest = PageRequest.of(0, 5*size);  //Fetchs large amount of data at a time
-
-        while (exactMatchBookNames.size() < size) {
-
-            List<String> bookNames = bookRepo.findBookNamesContains(query, pageRequest);
-
-            // If database doesn't have more data
-            if (bookNames.isEmpty()) {
-                break;
-            }
-
-            //Filter the exact matched book names
-            List<String> exactMatchedStrings = bookUtils.getExactMatchedContainingStrings(bookNames, query);
-            exactMatchBookNames.addAll(exactMatchedStrings);
-
-            // Increment the page number to fetch the next set of data
-            pageRequest = PageRequest.of(pageRequest.getPageNumber() + 1, 5*size);
-        }
-
-        // Slice the list to contain only the first 'size' elements before returning
-        if (exactMatchBookNames.size() > size) {
-            exactMatchBookNames = exactMatchBookNames.subList(0, size);
-        }
-
-        return exactMatchBookNames;
-    }
 
 
 }

@@ -6,6 +6,7 @@ import in.ineuron.models.ImageFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface BookService {
 
@@ -17,12 +18,11 @@ public interface BookService {
     public Boolean checkBookStatus(Long id);
     public Integer activateBookStatus(Long id);
     public Integer deactivateBookStatus(Long id);
-    public List<BookResponse> searchBooksByTitle(String query, Integer page, Integer size);
-    public List<BookResponse> searchBooksByCategory(String query, Integer page, Integer size);
-    public List<BookResponse> searchBooksByDescription(String query, Integer page, Integer size);
     public List<BookResponse> searchBooks(String query, Integer page, Integer size);
+
+    List<BookResponse> enhancedSearchBooks(String query, Integer page, Integer size);
+
     public Boolean increaseBookStock(Long bookId, Integer stockValue);
     public Boolean decreaseBookStock(Long bookId, Integer stockValue);
     public List<String> getSuggestedBookNamesByTitle(String query, Integer size);
-    public List<String> getSuggestedBookNamesByExactMatch(String query, Integer size);
 }

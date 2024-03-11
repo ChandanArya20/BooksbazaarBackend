@@ -23,9 +23,6 @@ public class ImageFileController {
 	@Autowired
 	private BookService bookService;
 	
-	@Value("${baseURL}")
-	private String baseURL;
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getBookImageById(@PathVariable Long id){
 		

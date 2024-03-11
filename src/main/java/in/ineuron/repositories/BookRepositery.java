@@ -24,15 +24,25 @@ public interface BookRepositery extends JpaRepository<Book, Long> {
 	 @Modifying
 	 @Query("UPDATE Book b SET b.status = false WHERE b.id = :id")
 	 public Integer deactivateBookStatusById(Long id);
-	 
-	 
+
+
 	 public List<Book> findByTitleContainingIgnoreCaseAndStatus(String query,Pageable pageable, Boolean status);
 	 public List<Book> findByCategoryContainingIgnoreCaseAndStatus(String query,Pageable pageable, Boolean status);
 	 public List<Book> findByDescriptionContainingIgnoreCaseAndStatus(String query,Pageable pageable, Boolean status);
-	 
-	 
-	 
-	 @Query("SELECT b.title FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :query , '%')) AND b.status = true")
+
+	@Query("""
+       SELECT b FROM Book b 
+       WHERE 
+           LOWER(b.title) LIKE LOWER(CONCAT('%', :query , '%')) OR
+           LOWER(b.category) LIKE LOWER(CONCAT('%', :query , '%')) OR
+           LOWER(b.description) LIKE LOWER(CONCAT('%', :query , '%')) OR
+           LOWER(b.author) LIKE LOWER(CONCAT('%', :query , '%')) OR
+           LOWER(b.publisher) LIKE LOWER(CONCAT('%', :query , '%')) AND b.status = true
+       """)
+	List<Book> searchInTitleCategoryDescription(String query, Pageable pageable);
+
+
+	@Query("SELECT b.title FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :query , '%')) AND b.status = true")
 	 List<String> findBookNamesContains(String query, Pageable pageable);
 	 
 	 @Query("SELECT b.title FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT(:query, '%')) AND b.status = true")

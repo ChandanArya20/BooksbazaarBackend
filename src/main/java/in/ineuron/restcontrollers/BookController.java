@@ -1,11 +1,12 @@
 package in.ineuron.restcontrollers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import in.ineuron.services.BookService;
+import in.ineuron.utils.AppUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import in.ineuron.dto.BookAddRequest;
@@ -41,8 +40,8 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @Value("${baseURL}")
-    private String baseURL;
+    @Autowired
+    private AppUtils appUtils;
 
     @Autowired
     private ObjectMapper mapper;
@@ -51,7 +50,7 @@ public class BookController {
     BookUtils bookUtils;
 
     @PostMapping("seller/add-book")
-    public ResponseEntity<?> updateBookData(@RequestParam MultipartFile coverImage, @RequestParam String bookInfo) throws IOException {
+    public ResponseEntity<?> saveBookData(@RequestParam MultipartFile coverImage, @RequestParam String bookInfo) throws IOException {
 
         //convert string into BookAddRequest object
         BookAddRequest bookRequest = mapper.readValue(bookInfo, BookAddRequest.class);
@@ -92,7 +91,7 @@ public class BookController {
 
             BookResponse bookResponse = new BookResponse();
             BeanUtils.copyProperties(book, bookResponse);
-            bookResponse.setImageURL(baseURL + "/api/image/" + book.getCoverImage().getId());
+            bookResponse.setImageURL(appUtils.getBaseURL() + "/api/image/" + book.getCoverImage().getId());
             return ResponseEntity.ok(bookResponse);
 
         } else {
@@ -141,65 +140,19 @@ public class BookController {
         return ResponseEntity.ok("Status changed successfully");
     }
 
-    @GetMapping("/search/title")
-    public ResponseEntity<List<BookResponse>> getAllBooksByTitle(
-            @RequestParam String query,
-            @RequestParam Integer page,
-            @RequestParam Integer size) {
-
-        List<BookResponse> searchedBooks = new ArrayList<>();
-
-        if (!query.isBlank()) {
-
-            searchedBooks = bookService.searchBooksByTitle(query.trim(), page, size);
-        }
-
-        return ResponseEntity.ok(searchedBooks);
-    }
-
-    @GetMapping("/search/category")
-    public ResponseEntity<List<BookResponse>> getAllBooksByCategory(
-            @RequestParam String query,
-            @RequestParam Integer page,
-            @RequestParam Integer size) {
-
-        List<BookResponse> searchedBooks = new ArrayList<>();
-
-        if (!query.isBlank()) {
-            System.out.println(query + " " + page + " " + size);
-            searchedBooks = bookService.searchBooksByCategory(query.trim(), page, size);
-        }
-        return ResponseEntity.ok(searchedBooks);
-    }
-
-    @GetMapping("/search/description")
-    public ResponseEntity<List<BookResponse>> getAllBooksByDescription(
-            @RequestParam String query,
-            @RequestParam Integer page,
-            @RequestParam Integer size) {
-
-        List<BookResponse> searchedBooks = new ArrayList<>();
-        if (!query.isBlank()) {
-
-            searchedBooks = bookService.searchBooksByDescription(query.trim(), page, size);
-        }
-        return ResponseEntity.ok(searchedBooks);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<BookResponse>> getSearchedBooks(
             @RequestParam Integer page,
             @RequestParam Integer size,
-            @RequestParam String query) {
+            @RequestParam String query) throws JsonProcessingException {
 
-        List<BookResponse> searchedBooks = new ArrayList<>();
+        List<BookResponse> searchedBooks=new ArrayList<>();
+
         if (!query.isBlank()) {
-
-            searchedBooks = bookService.searchBooks(query, page, size);
+            searchedBooks = bookService.enhancedSearchBooks(query, page, size);
         }
         return ResponseEntity.ok(searchedBooks);
     }
-
 
     @GetMapping("/suggest-book-names")
     public ResponseEntity<List<String>> getSuggestedBookNames(@RequestParam String query, @RequestParam Integer size) {

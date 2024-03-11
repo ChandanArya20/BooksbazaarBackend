@@ -31,7 +31,6 @@ public class Book {
 
     private String isbn;
 
-    @Lob
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private ImageFile coverImage;
 

@@ -19,10 +19,8 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartRepository cartRepo;
 
-
     @Override
     public void insertCartData(Cart cart) {
-
         cartRepo.save(cart);
     }
 

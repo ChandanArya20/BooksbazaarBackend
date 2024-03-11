@@ -39,9 +39,6 @@ public class BookOrderController {
 
 	@Autowired
 	BookOrderService bookOrderSer;
-	
-	@Value("${baseURL}")
-	private String baseURL;
 
 	@PostMapping("place-order")
 	public ResponseEntity<String> submitOrder( @RequestBody BookOrderRequest[] orderData){

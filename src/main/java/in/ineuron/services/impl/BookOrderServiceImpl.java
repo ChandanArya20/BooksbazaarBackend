@@ -31,8 +31,6 @@ public class BookOrderServiceImpl implements BookOrderService {
     @Autowired
     private BookService bookService;
 
-
-
     @Override
     public Boolean insertOrder(List<BookOrder> orders) {
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.ineuron.services.CartService;
+import in.ineuron.utils.AppUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +32,9 @@ public class CartController {
 	
 	@Autowired
 	private CartService cartService;
-	
-	@Value("${baseURL}")
-	private String baseURL;
+
+	@Autowired
+	private AppUtils appUtils;
 	
 	@PostMapping("/add-to-cart")
 	public ResponseEntity<String> addToCart(@RequestBody Cart cart){
@@ -58,7 +59,7 @@ public class CartController {
 			
 			BookResponse bookResponse = new BookResponse();
 			BeanUtils.copyProperties(cart.getBook(), bookResponse);
-			bookResponse.setImageURL(baseURL+"/api/image/"+cart.getBook().getCoverImage().getId());
+			bookResponse.setImageURL(appUtils.getBaseURL()+"/api/image/"+cart.getBook().getCoverImage().getId());
 			
 			cartResponse.setBook(bookResponse);
 			cartResponseList.add(cartResponse);

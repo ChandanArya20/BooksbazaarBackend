@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OTPStorageServiceImpl implements OTPStorageService {
     private final Map<String, OTPEntry> otpMap = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     public OTPStorageServiceImpl() {
         // Schedule a cleanup task to remove expired OTPs every 10 minutes.
@@ -46,7 +46,6 @@ public class OTPStorageServiceImpl implements OTPStorageService {
     }
 
     private void cleanUpExpiredOTP() {
-        System.out.println("cleanUpExpiredOTP() runs");
         // Iterate through the OTP map and remove entries older than 10 minutes.
         long currentTime = System.currentTimeMillis();
         otpMap.entrySet().removeIf(entry -> (currentTime - entry.getValue().getCreationTime() > 600_000));
