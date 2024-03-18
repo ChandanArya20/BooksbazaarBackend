@@ -3,7 +3,7 @@ package in.ineuron.dto;
 import java.util.List;
 
 import in.ineuron.models.Address;
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

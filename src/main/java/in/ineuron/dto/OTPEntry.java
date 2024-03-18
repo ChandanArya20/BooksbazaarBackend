@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class OTPEntry {
+
     private String otp;
     private long creationTime;
 

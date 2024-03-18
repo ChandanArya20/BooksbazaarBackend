@@ -5,35 +5,29 @@ import java.util.List;
 
 import in.ineuron.services.CartService;
 import in.ineuron.utils.AppUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import in.ineuron.dto.BookResponse;
 import in.ineuron.dto.CartResponse;
 import in.ineuron.models.Cart;
 import in.ineuron.models.User;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("api/cart")
 public class CartController {
-	
-	@Autowired
-	private CartService cartService;
 
-	@Autowired
+	private CartService cartService;
 	private AppUtils appUtils;
 	
 	@PostMapping("/add-to-cart")

@@ -2,7 +2,6 @@ package in.ineuron.services.impl;
 
 import in.ineuron.dto.OTPEntry;
 import in.ineuron.services.OTPStorageService;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

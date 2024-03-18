@@ -1,14 +1,7 @@
 package in.ineuron.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import in.ineuron.models.BookSeller;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,49 +11,40 @@ import lombok.ToString;
 @ToString
 public class BookResponse {
 	
-	    private Long id;
+	private Long id;
 
-	    private String title;
-	    
-	    private String author;
+	private String title;
 
-	    private String description;
-	    
-	    private LocalDateTime bookListingTime;
-	      
-	    private String isbn;
+	private String author;
 
-	    private String imageURL;
+	private String description;
 
-	    private double price;
+	private LocalDateTime bookListingTime;
 
-	    private String language;
+	private String isbn;
 
-	    private String category;
+	private String imageURL;
 
-	    private String publishingYear;
+	private double price;
 
-	    private int pages;
+	private String language;
 
-	    private String publisher;
+	private String category;
 
-	    private String format;
+	private String publishingYear;
 
-	    private int stockAvailability;
-	    
-	    private int deliveryTime;
-	    
-	    private String edition;
-	    
-	    private Boolean status;
-	    
-//	    @JsonIgnore
-//	    private BookSeller bookSeller;
-	     
+	private int pages;
 
-//	    @Column(nullable = false)
-//	    private double rating;
-	    
-//	    private String comments;
+	private String publisher;
+
+	private String format;
+
+	private int stockAvailability;
+
+	private int deliveryTime;
+
+	private String edition;
+
+	private Boolean status;
 
 }

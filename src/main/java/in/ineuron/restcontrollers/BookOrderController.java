@@ -8,9 +8,8 @@ import java.util.List;
 import in.ineuron.services.BookOrderService;
 import in.ineuron.services.BookService;
 import in.ineuron.services.SellerService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,16 +27,12 @@ import in.ineuron.models.BookOrder;
 import in.ineuron.models.User;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/order")
 public class BookOrderController {
 
-	@Autowired
 	SellerService sellerService;
-
-	@Autowired
 	BookService bookService;
-
-	@Autowired
 	BookOrderService bookOrderSer;
 
 	@PostMapping("place-order")
@@ -86,7 +81,6 @@ public class BookOrderController {
 	public ResponseEntity<String> changeBookOrderStatus(@PathVariable(name = "order-id") Long orderId, @RequestParam String status) {
 		
 		if(status.equals("Cancelled") || status.equals("Returned") ) {
-			
 			BookOrder order = bookOrderSer.getOrderById(orderId);
 			bookService.increaseBookStock(order.getBook().getId(), order.getQuantity());
 		}

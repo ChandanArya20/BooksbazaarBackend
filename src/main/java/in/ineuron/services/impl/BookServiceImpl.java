@@ -9,25 +9,20 @@ import in.ineuron.repositories.BookRepositery;
 import in.ineuron.repositories.ImageFileRepository;
 import in.ineuron.services.BookService;
 import in.ineuron.utils.BookUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    @Autowired
     private BookRepositery bookRepo;
-
-    @Autowired
     private ImageFileRepository imageFileRepo;
-
-    @Autowired
     BookUtils bookUtils;
 
     @Override
@@ -177,7 +172,6 @@ public class BookServiceImpl implements BookService {
         }
         return false;
     }
-
 
     @Override
     public List<String> getSuggestedBookNamesByTitle(String query, Integer size) {

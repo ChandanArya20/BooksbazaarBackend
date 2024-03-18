@@ -1,14 +1,12 @@
 package in.ineuron.restcontrollers;
 
 import in.ineuron.dto.*;
-import in.ineuron.models.User;
-import in.ineuron.services.BookService;
 import in.ineuron.services.OTPSenderService;
 import in.ineuron.services.OTPStorageService;
 import in.ineuron.services.SellerService;
 import in.ineuron.utils.EmailValidator;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,19 +17,13 @@ import in.ineuron.models.BookSeller;
 import javax.mail.MessagingException;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/seller")
 public class SellerController {
 
-	@Autowired
 	private SellerService sellerService;
-	
-	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-
-	@Autowired
 	private OTPSenderService otpSender;
-
-	@Autowired
 	private OTPStorageService otpStorage;
 	
 	@PostMapping("/register") 

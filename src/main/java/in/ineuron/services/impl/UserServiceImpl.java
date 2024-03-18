@@ -7,6 +7,7 @@ import in.ineuron.models.User;
 import in.ineuron.repositories.UserRepository;
 import in.ineuron.services.UserService;
 import in.ineuron.utils.EmailValidator;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,9 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepo;
 
     @Override

@@ -3,21 +3,19 @@ package in.ineuron.services.impl;
 import in.ineuron.services.EmailSenderService;
 import in.ineuron.services.OTPSenderService;
 import in.ineuron.services.SmsSenderService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
 public class OTPSenderServiceImpl implements OTPSenderService {
-    @Autowired
+
     private EmailSenderService emailSender;
-
-    @Autowired
     private SmsSenderService smsSender;
-
 
     public Integer sendOTPByEmail(String email ) throws MessagingException {
 

@@ -1,10 +1,10 @@
 package in.ineuron.services.impl;
 
 import in.ineuron.models.BookSeller;
-import in.ineuron.models.User;
 import in.ineuron.repositories.SellerRepository;
 import in.ineuron.services.SellerService;
 import in.ineuron.utils.EmailValidator;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +13,9 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class SellerServiceImpl implements SellerService {
 
-    @Autowired
     private SellerRepository sellerRepo;
 
     @Override

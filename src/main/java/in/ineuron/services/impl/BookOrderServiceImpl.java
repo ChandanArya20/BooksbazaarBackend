@@ -9,7 +9,7 @@ import in.ineuron.repositories.SellerRepository;
 import in.ineuron.services.BookOrderService;
 import in.ineuron.services.BookService;
 import in.ineuron.utils.BookUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,18 +17,12 @@ import java.util.List;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class BookOrderServiceImpl implements BookOrderService {
 
-    @Autowired
     private BookOrderRepository orderRepo;
-
-    @Autowired
     private SellerRepository sellerRepo;
-
-    @Autowired
     BookUtils bookUtils;
-
-    @Autowired
     private BookService bookService;
 
     @Override

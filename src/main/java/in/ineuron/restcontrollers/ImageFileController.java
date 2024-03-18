@@ -3,8 +3,7 @@ package in.ineuron.restcontrollers;
 import java.util.Optional;
 
 import in.ineuron.services.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import in.ineuron.models.ImageFile;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/image")
 public class ImageFileController {
-	
-	@Autowired
+
 	private BookService bookService;
 	
 	@GetMapping("/{id}")

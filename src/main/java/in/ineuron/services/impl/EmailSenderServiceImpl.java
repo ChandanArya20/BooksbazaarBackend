@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {

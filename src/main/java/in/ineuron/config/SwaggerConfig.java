@@ -1,9 +1,7 @@
 package in.ineuron.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -28,17 +26,17 @@ public class SwaggerConfig {
 				.build().apiInfo(apiInfo());
 	}
 
-	  private ApiInfo apiInfo() {
+    private ApiInfo apiInfo() {
 
-	        return new ApiInfoBuilder()
-	                .title("iNeuron Intelligence Private Limited")
-	                .description("\"E-commerce Bookstore api \"")
-	                .version("1.1.0")
-	                .license("Apache 2.0")
-	                .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
-	                .contact(new Contact("Chandan Kumar", "https://www.linkedin.com/in/chandan-kumar-292aa9257", "chandank1848@gmail.com"))
-	                .build();
-	    }
+		return new ApiInfoBuilder()
+				.title("iNeuron Intelligence Private Limited")
+				.description("\"E-commerce Bookstore api \"")
+				.version("1.1.0")
+				.license("Apache 2.0")
+				.licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
+				.contact(new Contact("Chandan Kumar", "https://www.linkedin.com/in/chandan-kumar-292aa9257", "chandank1848@gmail.com"))
+				.build();
+	}
 }
 
 

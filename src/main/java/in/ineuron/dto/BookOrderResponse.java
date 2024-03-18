@@ -1,10 +1,9 @@
 package in.ineuron.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import in.ineuron.models.Address;
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

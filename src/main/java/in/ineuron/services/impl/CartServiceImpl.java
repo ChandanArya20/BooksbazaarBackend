@@ -4,6 +4,7 @@ import in.ineuron.models.Cart;
 import in.ineuron.models.User;
 import in.ineuron.repositories.CartRepository;
 import in.ineuron.services.CartService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,9 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    @Autowired
     private CartRepository cartRepo;
 
     @Override

@@ -4,24 +4,19 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import in.ineuron.services.BookService;
 import in.ineuron.utils.AppUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,19 +29,13 @@ import in.ineuron.models.ImageFile;
 import in.ineuron.utils.BookUtils;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/book")
 public class BookController {
 
-    @Autowired
     private BookService bookService;
-
-    @Autowired
     private AppUtils appUtils;
-
-    @Autowired
     private ObjectMapper mapper;
-
-    @Autowired
     BookUtils bookUtils;
 
     @PostMapping("seller/add-book")
@@ -119,10 +108,11 @@ public class BookController {
 
         String msg = "";
 
-        if (updatedBook != null)
+        if (updatedBook != null){
             msg = "Books Info updated successfully";
-        else
+        }else{
             msg = "Books Info updation unsuccessfully";
+        }
 
         return ResponseEntity.ok(msg);
     }
@@ -132,10 +122,11 @@ public class BookController {
 
         Boolean status = bookService.checkBookStatus(id);
 
-        if (status)
+        if (status){
             bookService.deactivateBookStatus(id);
-        else
+        }else{
             bookService.activateBookStatus(id);
+        }
 
         return ResponseEntity.ok("Status changed successfully");
     }
@@ -160,7 +151,6 @@ public class BookController {
         List<String> suggestedBooks = new ArrayList<>();
 
         if (!query.isBlank()) {
-
             suggestedBooks = bookService.getSuggestedBookNamesByTitle(query.trim(), size);
         }
 

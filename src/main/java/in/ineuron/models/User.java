@@ -13,31 +13,30 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-
 
 @Setter
+@Getter
 @Entity
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	
+
 	@Column(nullable = false)
 	String name;
-	
+
 	@Column(unique = true, nullable = false)
 	String phone;
-	
+
 	@Column(unique = true)
 	String email;
 	
 	@Column(nullable = false)
 	String password;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	List<Address> address;
 	
@@ -47,26 +46,6 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	List<Cart> cart;
 
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public List<Address> getAddress() {
-		return address;
-	}
-	
 	@JsonIgnore
 	public List<BookOrder> getOrders() {
 		return orders;
