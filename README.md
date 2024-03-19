@@ -40,9 +40,13 @@ Before you begin, ensure you have met the following requirements:
    ```shell
    git clone https://github.com/ChandanArya20/E-Commerece-bookbazaarApp.git
    ```
-2. Now import this spring boot project in IDE and you are good to go
+2. If you want you can refer 'Frontend Repository' as well:
+
+  Github : https://github.com/ChandanArya20/talkify-frontend2.0.git
+  
+3. Now import this spring boot project in IDE and you are good to go
    
-3. Use IDE to further build and run this project
+4. Use IDE to further build and run this project
 
 
 ## Usage
