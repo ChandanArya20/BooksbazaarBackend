@@ -101,6 +101,7 @@ Note : You can change the host name in local link as per your requirement and ne
 - Wishlist Feature
 - Review and Rating System
 - Discount system
+- Payment System
 
 ## Contributing
 If you would like to contribute to the project, please follow the guidelines in CONTRIBUTING.md.
