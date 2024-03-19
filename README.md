@@ -42,7 +42,7 @@ Before you begin, ensure you have met the following requirements:
    ```
 2. If you want you can refer 'Frontend Repository' as well:
 
-  Github : https://github.com/ChandanArya20/talkify-frontend2.0.git
+      Github : https://github.com/ChandanArya20/e-commerce-bookstore.git
   
 3. Now import this spring boot project in IDE and you are good to go
    
