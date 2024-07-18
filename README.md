@@ -12,6 +12,7 @@ Frontend App Link: https://booksbazaar.netlify.app/
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+- [Usage](#usage)
 - [API Documentation](#api-documentation)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
@@ -39,13 +40,46 @@ Before you begin, ensure you have met the following requirements:
    ```shell
    git clone https://github.com/ChandanArya20/E-Commerece-bookbazaarApp.git
    ```
-2. If you want you can refer 'Frontend Repository' as well:
-
-      Github : https://github.com/ChandanArya20/e-commerce-bookstore.git
-  
-3. Now import this spring boot project in IDE and you are good to go
+2. Now import this spring boot project in IDE and you are good to go
    
-4. Use IDE to further build and run this project
+3. Use IDE to further build and run this project
+
+
+## Usage
+- User Registration:
+
+Endpoint: /api/register
+
+Method: POST
+
+Description: Register a new user.
+
+Example Request:
+
+{
+
+  "name": "Chandan Kumar",
+  
+  "phone": 99056xxxxx,
+  
+  "email": "chandank1848@gmail.com"
+
+  "password": "20002ckc+"
+  
+}
+
+
+- Get All Books:
+
+Endpoint: /api/book/seller/{seller_id}/all-books
+
+Method: GET
+
+Description: Get a list of all books available in the bookstore of a seller.
+
+Example Response:
+
+/api/book/seller/10/all-books
 
 
 ## API Documentation
@@ -67,7 +101,6 @@ Note : You can change the host name in local link as per your requirement and ne
 - Wishlist Feature
 - Review and Rating System
 - Discount system
-- Payment System
 
 ## Contributing
 If you would like to contribute to the project, please follow the guidelines in CONTRIBUTING.md.
@@ -82,5 +115,4 @@ Happy Reading and Shopping!
 ## Developer 
 - **Chandan Kumar**
 - **E-mail**: chandank1848@gmail.com
-- **Linkedin**: www.linkedin.com/in/chandan2002
 - **Github**: https://github.com/ChandanArya20

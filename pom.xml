@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>in.ineuron</groupId>
-	<artifactId>E-Commerce-Bookstore-Springboot</artifactId>
+	<artifactId>BooksbazaarBackend-Deploy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>E-Commerce-Bookstore-Springboot</name>
+	<name>BooksbazaarBackend-Deploy</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -28,6 +28,11 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
