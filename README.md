@@ -38,7 +38,7 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/ChandanArya20/E-Commerece-bookbazaarApp.git
+   git clone https://github.com/ChandanArya20/BooksbazaarBackend.git
    ```
 2. Now import this spring boot project in IDE and you are good to go
    
